@@ -182,28 +182,28 @@ enterprise-datawarehouse/
 1. **Create the database and schemas**
    ```sql
    -- run in SSMS / Azure Data Studio, connected as a user with CREATE DATABASE rights
-   :r scripts/init_database.sql
+   scripts/init_database.sql
    ```
    ⚠️ This drops any existing `dataWarehouse` database with the same name - back up first if needed.
 
 2. **Create Bronze tables and load raw data**
    ```sql
-   :r scripts/bronze/ddl_bronze.sql
+   scripts/bronze/ddl_bronze.sql
    ```
    Before running the load procedure, replace every `'{your location}\...'` file path in `scripts/bronze/load_bronze_proc.sql` with the absolute path to your local `data/` folder.
    ```sql
-   :r scripts/bronze/load_bronze_proc.sql   -- creates + executes bronze.load_bronze
+   scripts/bronze/load_bronze_proc.sql   -- creates + executes bronze.load_bronze
    ```
 
 3. **Create Silver tables and run transformations**
    ```sql
-   :r scripts/silver/ddl_silver.sql
-   :r scripts/silver/load_silver_proc.sql   -- creates + executes silver.load_silver
+   scripts/silver/ddl_silver.sql
+   scripts/silver/load_silver_proc.sql   -- creates + executes silver.load_silver
    ```
 
 4. **Create Gold views**
    ```sql
-   :r scripts/gold/ddl_gold.sql
+   scripts/gold/ddl_gold.sql
    ```
 
 5. **Validate**

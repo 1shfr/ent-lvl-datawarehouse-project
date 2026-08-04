@@ -212,7 +212,7 @@ enterprise-datawarehouse/
 ## Requirements
 
 - SQL Server (developed against T-SQL syntax: `BULK INSERT`, `TRY...CATCH`, `GO` batch separators)
-- SSMS or Azure Data Studio (or any client supporting `sqlcmd`-style `:r` script includes)
+- SSMS or Azure Data Studio (or any client supporting)
 - Read access to the `data/` CSVs from the SQL Server instance (local file path or accessible network share)
 
 ## Known Issues

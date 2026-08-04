@@ -1,6 +1,6 @@
 # Enterprise Data Warehouse
 
-A SQL Server data warehouse built on the **Medallion Architecture** (Bronze → Silver → Gold), integrating customer, product, and sales data from two source systems — a CRM and an ERP — into a clean, query-ready star schema for analytics and reporting.
+A SQL Server data warehouse built on the **Medallion Architecture** (Bronze → Silver → Gold), integrating customer, product, and sales data from two source systems - a CRM and an ERP - into a clean, query-ready star schema for analytics and reporting.
 
 ## Architecture
 
@@ -42,7 +42,7 @@ flowchart LR
 
 ## ETL Process
 
-### 1. Extract & Load — Bronze Layer
+### 1. Extract & Load - Bronze Layer
 
 Source CSVs are loaded as-is into `bronze` tables via `BULK INSERT`, orchestrated by the `bronze.load_bronze` stored procedure. Each load truncates the target table first (full refresh, not incremental).
 
@@ -61,7 +61,7 @@ sequenceDiagram
 
 **Tables loaded:** `crm_cst_info`, `crm_prd_info`, `crm_sales_details`, `erp_cust_az12`, `erp_loc_a101`, `erp_px_cat_g1v2`
 
-### 2. Transform — Silver Layer
+### 2. Transform - Silver Layer
 
 `silver.load_silver` reads from `bronze` and applies cleansing rules before inserting into `silver` tables. Key transformations:
 
@@ -100,7 +100,7 @@ Notable business rules:
 - **Cross-system standardization**: gender and country values are normalized differently across CRM and ERP (e.g., `US`/`USA` → `United State`, `DE` → `Germany`).
 - All `silver` tables carry a `dwh_create_date` audit column defaulting to `GETDATE()`.
 
-### 3. Model — Gold Layer
+### 3. Model - Gold Layer
 
 Gold is a set of SQL **views** (not materialized tables) that join `silver` tables into a Kimball-style star schema: two dimensions and one fact.
 
@@ -150,7 +150,7 @@ erDiagram
 ```
 
 - `dim_customers` merges CRM customer master data with ERP demographic (`erp_cust_az12`) and location (`erp_loc_a101`) data. CRM is the source of truth for gender; ERP fills gaps.
-- `dim_products` merges CRM product data with ERP category metadata, filtering to only **current** products (`prd_end_dt IS NULL`) — historical product versions are excluded from the dimension.
+- `dim_products` merges CRM product data with ERP category metadata, filtering to only **current** products (`prd_end_dt IS NULL`) - historical product versions are excluded from the dimension.
 - `fact_sales` joins cleansed sales transactions to both dimensions via surrogate keys.
 
 ## Repository Structure
@@ -184,7 +184,7 @@ enterprise-datawarehouse/
    -- run in SSMS / Azure Data Studio, connected as a user with CREATE DATABASE rights
    :r scripts/init_database.sql
    ```
-   ⚠️ This drops any existing `dataWarehouse` database with the same name — back up first if needed.
+   ⚠️ This drops any existing `dataWarehouse` database with the same name - back up first if needed.
 
 2. **Create Bronze tables and load raw data**
    ```sql
@@ -217,10 +217,10 @@ enterprise-datawarehouse/
 
 ## Known Issues
 
-- `scripts/gold/ddl_gold.sql` references `silver.crm_cust_info`, but the table is created as `silver.crm_cst_info` in `scripts/silver/ddl_silver.sql` — this naming mismatch will need to be reconciled before the Gold view will compile.
+- `scripts/gold/ddl_gold.sql` references `silver.crm_cust_info`, but the table is created as `silver.crm_cst_info` in `scripts/silver/ddl_silver.sql` - this naming mismatch will need to be reconciled before the Gold view will compile.
 - File paths in `load_bronze_proc.sql` are placeholders (`{your location}`) and must be edited per environment before execution.
 - Loads are full-refresh (`TRUNCATE` + reload) rather than incremental.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).
